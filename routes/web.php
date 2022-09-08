@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,8 +25,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::middleware('admin')->group(function () {
+        Route::controller(EmployeeController::class)->prefix('employees')->group(function () {
+            Route::get('/', 'index')->name('employees');
+            Route::get('/{employee}', 'show')->name('employees.show');
+            Route::delete('/{employee}', 'destroy')->name('employees.destroy');
+        });
+    });
+});
+
+require __DIR__ . '/auth.php';

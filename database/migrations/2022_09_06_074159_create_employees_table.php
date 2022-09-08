@@ -19,11 +19,13 @@ return new class extends Migration
             $table->string('employee_id', 15);
             $table->string('first_name', 50);
             $table->string('middle_name', 50)->nullable();
+            $table->string('last_name', 50);
             $table->date('birth_date');
             $table->string('gender', 1);
-            $table->string('last_name', 50);
+            $table->string('email')->unique();
             $table->string('position', 50);
             $table->decimal('salary');
+            $table->string('profile_pic')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

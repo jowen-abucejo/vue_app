@@ -24,6 +24,7 @@ class EmployeeSeeder extends Seeder
                 'last_name' => 'de la Cruz',
                 'birth_date' => Carbon::now()->subYears(34)->subMonths(4)->subDays(8)->format('Y-m-d'),
                 'gender' => 'M',
+                'email' => 'admin@gmail.com',
                 'position' => 'CEO',
                 'salary' => 400000.00
             ],
@@ -33,6 +34,7 @@ class EmployeeSeeder extends Seeder
                 'last_name' => 'Mercado',
                 'birth_date' => Carbon::now()->subYears(30)->subMonths(2)->format('Y-m-d'),
                 'gender' => 'F',
+                'email' => 'maria@gmail.com',
                 'position' => 'Senior Developer',
                 'salary' => 100000.00
             ],
@@ -42,6 +44,7 @@ class EmployeeSeeder extends Seeder
                 'last_name' => 'Lastimosa',
                 'birth_date' => Carbon::now()->subYears(25)->subDays(27)->format('Y-m-d'),
                 'gender' => 'M',
+                'email' => 'peter@gmail.com',
                 'position' => 'Junior Software Tester',
                 'salary' => 30000.00
             ]

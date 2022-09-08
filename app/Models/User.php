@@ -49,7 +49,7 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function user(): HasOne
+    public function employee(): HasOne
     {
         return $this->hasOne(Employee::class)->withTrashed();
     }
