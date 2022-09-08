@@ -52,14 +52,15 @@ class Employee extends Model
     }
 
     /**
-     * Get the user's first name.
+     * Get the user's profile pic.
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
     protected function profilePic(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Storage::url($value),
+            get: fn ($value) => $value ? Storage::url($value) : '',
+            set: fn ($value) => $value ? str_replace('/storage', '', $value) : '',
         );
     }
 }

@@ -53,7 +53,7 @@ watch(search, (value) => {
 					<div class="flex items-center justify-center w-full">
 						<div class="relative w-1/2 m-4 p-4">
 							<Link
-								:href="route('dashboard')"
+								:href="route('employees.create')"
 								class="text-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
 							>
 								New Employee
@@ -130,9 +130,7 @@ watch(search, (value) => {
 									<td class="p-3 border-zinc-900 border-b">
 										{{ employee.position }}
 									</td>
-									<td
-										class="p-3 border-zinc-900 border-b gap-2"
-									>
+									<td class="p-3 border-zinc-900 border-b">
 										<Link
 											:href="
 												route(
@@ -140,22 +138,22 @@ watch(search, (value) => {
 													employee.id
 												)
 											"
-											class="text-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
+											class="my-2 mx-1 block lg:inline lg:w-1/4 w-full text-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
 											>View</Link
 										>
 										<Link
 											:href="
 												route(
-													'employees.show',
+													'employees.edit',
 													employee.id
 												)
 											"
-											class="text-center px-4 py-2 bg-orange-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
+											class="my-2 mx-1 block lg:inline lg:w-1/4 w-full text-center px-4 py-2 bg-orange-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
 											>Edit</Link
 										>
 										<button
 											@click="deleteEmployee(employee.id)"
-											class="text-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
+											class="my-2 mx-1 block lg:inline lg:w-1/4 w-full text-center px-2 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase"
 										>
 											Delete
 										</button>

@@ -1,7 +1,6 @@
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
-import { Head } from "@inertiajs/inertia-vue3";
-import { Link } from "@inertiajs/inertia-vue3";
+import { Head, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 
 let props = defineProps({
@@ -53,11 +52,14 @@ const getOrigin = () => {
 					"
 					alt="Profile Pic"
 				/>
-				<h5 class="mb-1 text-xl font-medium text-gray-900">
+				<h5 class="text-xl font-medium text-gray-900">
 					{{ employee.first_name }}
 					{{ employee.middle_name.substring(0, 1) + "." }}
 					{{ employee.last_name }}
 				</h5>
+				<span class="text-sm text-gray-600 mb-1">{{
+					employee.email
+				}}</span>
 				<span class="text-sm text-gray-500">{{
 					employee.position
 				}}</span>
@@ -235,7 +237,7 @@ const getOrigin = () => {
 
 				<div class="flex flex-col gap-2 my-6">
 					<Link
-						:href="route('dashboard')"
+						:href="route('employees.edit', employee.id)"
 						class="text-center px-4 py-2 bg-orange-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase w-full mb-4"
 					>
 						Edit

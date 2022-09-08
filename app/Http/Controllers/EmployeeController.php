@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
 
 class EmployeeController extends Controller
@@ -42,7 +46,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Admin/Employee/Create');
     }
 
     /**
@@ -53,7 +57,40 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'last_name' => 'required|regex:/^[a-zA-zÑñ ]*$/',
+            'first_name' => 'required|regex:/^[a-zA-zÑñ ]*$/',
+            'middle_name' => 'required|regex:/^[a-zA-zÑñ ]*$/',
+            'gender' => 'required',
+            'birth_date' => 'required',
+            'email' => 'required|email|unique:employees,email',
+            'position' => 'required',
+            'salary' => 'required|min:0.00',
+            'profile_pic' => [
+                'required',
+                File::types(['jpg', 'jpeg', 'png'])
+                    ->max(12 * 1024),
+            ],
+        ]);
+
+        $birth_date = new DateTime($request->input('birth_date'));
+        $file = $request->hasFile('profile_pic') ? $request->file('profile_pic')->store('public/profile_pics') : '';
+        $new_employee = Employee::create([
+            'first_name' => trim($request->input('first_name')),
+            'middle_name' => trim($request->input('middle_name')),
+            'last_name' =>  trim($request->input('last_name')),
+            'birth_date' => $birth_date->format('Y-m-d'),
+            'gender' => $request->input('gender'),
+            'email' => $request->input('email'),
+            'position' => $request->input('position'),
+            'salary' => $request->input('salary'),
+            'profile_pic' => $file
+        ]);
+
+        // return Inertia::render('Admin/Employee/Read', [
+        //     'employee' => $new_employee,
+        // ]);
+        return redirect()->route('employees.show', [$new_employee->id]);
     }
 
     /**
@@ -73,24 +110,55 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Employee  $employee
+     * @param  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit($employee)
     {
-        //
+        $read = $employee ? Employee::withTrashed()->with('user')->findOrFail($employee) : null;
+        return Inertia::render('Admin/Employee/Edit', [
+            'employee' => $read,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Employee  $employee
+     * @param  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $employee)
     {
-        //
+        $read = $employee ? Employee::withTrashed()->with('user')->findOrFail($employee) : null;
+        $this->validate($request, [
+            'last_name' => 'required|regex:/^[a-zA-zÑñ ]*$/',
+            'first_name' => 'required|regex:/^[a-zA-zÑñ ]*$/',
+            'middle_name' => 'required|regex:/^[a-zA-zÑñ ]*$/',
+            'gender' => 'required',
+            'birth_date' => 'required',
+            'email' => 'required|email|unique:employees,email,' . $read->id,
+            'position' => 'required',
+            'salary' => 'required|min:0.00',
+        ]);
+        $birth_date = new DateTime($request->input('birth_date'));
+        $file = $request->hasFile('profile_pic') ? $request->file('profile_pic')->store('public/profile_pics') : $read->profile_pic;
+        $read->update([
+            'first_name' => trim($request->input('first_name')),
+            'middle_name' => trim($request->input('middle_name')),
+            'last_name' =>  trim($request->input('last_name')),
+            'birth_date' => $birth_date,
+            'gender' => $request->input('gender'),
+            'email' => $request->input('email'),
+            'position' => $request->input('position'),
+            'salary' => $request->input('salary'),
+            'profile_pic' => $file
+        ]);
+
+        // return Inertia::render('Admin/Employee/Read', [
+        //     'employee' => $read,
+        // ]);
+        return redirect()->route('employees.show', [$read->id]);
     }
 
     /**
@@ -104,6 +172,7 @@ class EmployeeController extends Controller
         $read = Employee::withTrashed()->find($employee);
         $user = $read->user();
 
+        Storage::delete($read->profile_pic);
         $read->forceDelete();
         $user->forceDelete();
 
